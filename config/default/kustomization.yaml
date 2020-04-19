@@ -1,0 +1,10 @@
+namespace: kube-system
+
+namePrefix: hcloud-metallb-floater-
+
+commonLabels:
+  app.kubernetes.io/name: hcloud-metallb-floater
+
+bases:
+- ../controller
+- ../rbac

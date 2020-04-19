@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller
+spec:
+  selector:
+    matchLabels:
+      control-plane: controller
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        control-plane: controller
+    spec:
+      containers:
+      - name: controller
+        command:
+        - /hcloud-metallb-floater
+        - -v
+        - --enable-leader-election
+        image: simonswine/hcloud-metallb-floater:v0.1.0
+        env:
+        - name: HCLOUD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: hcloud
+              key: token
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 16Mi
+      terminationGracePeriodSeconds: 10
+      serviceAccountName: controller
+      tolerations: 
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+
